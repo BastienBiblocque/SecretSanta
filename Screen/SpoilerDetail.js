@@ -2,14 +2,13 @@ import {Image, ScrollView, StyleSheet, Text} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {text} from "../style/text";
-import {ButtonComp} from "../Component/Button";
 
 export function SpoilerDetailScreen() {
     const couples = [
-        {from: 'John',to: 'Julie',},
-        {from: 'Jean',to: 'John',},
-        {from: 'Julie',to: 'Pierre',},
-        {from: 'Pierre',to: 'Jean',}]
+        {from: 'John', to: 'Julie'},
+        {from: 'Jean', to: 'John'},
+        {from: 'Julie', to: 'Pierre'},
+        {from: 'Pierre', to: 'Jean'}]
     return (
         <ScrollView style={background.background}>
             <Image style={styles.image} source={require('../image/skate.png')}/>

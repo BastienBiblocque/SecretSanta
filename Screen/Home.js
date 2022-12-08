@@ -1,33 +1,38 @@
-import {ActivityIndicator, Button, ScrollView, Text, View} from "react-native";
+import {Image, ScrollView, Text, StyleSheet} from "react-native";
 import * as React from "react";
-import {useEffect, useState} from "react";
-import axios from "axios";
-import {CharacterCard} from "../Component/CharacterCard";
+import {ButtonComp} from "../Component/Button";
+import {useNavigation} from "@react-navigation/native";
+import {background} from "../style/background";
+import {text} from "../style/text";
 
-export function HomeScreen({ navigation }) {
-    const [isLoading, setIsLoading] = useState(true);
-
-    const [animals, setAnimals] = useState([]);
-
-    const fetchData = () => {
-        const baseURL = "https://api.got.show/api/show/animals/";
-        axios.get(`${baseURL}`).then((response) => {
-            setAnimals(response.data);
-            setIsLoading(false);
-        });
-    };
-
-    useEffect(() => {
-        fetchData();
-    }, []);
-
+export function HomeScreen() {
+    const navigation = useNavigation();
+    const navigateTo = (screen) => {
+        navigation.navigate(screen);
+    }
     return (
-        <ScrollView>
-            {isLoading ? <ActivityIndicator size="large"/> : (
-                animals.map((animal) => (
-                    <CharacterCard animal={animal} key={animal.id} />
-                ))
-            )}
+        <ScrollView style={background.background} >
+            <Image style={styles.image} source={require('../image/gift.png')}/>
+            <Text style={text.text}>Bienvenue dans notre application d’organisation de secret santa !</Text>
+            <Text style={text.text}> Mais qu’est-ce qu’un secret santa ?</Text>
+            <Text style={text.text}>Il s’agit d’un évènement dans lequel les participants offrent un cadeau à un autre participant choisi au hasard ! </Text>
+            <Text style={text.text}>Commencez par organiser le vôtre dès maintenant :</Text>
+            <ButtonComp onPress={()=>{navigateTo('Creation')}} text="Organiser" isPrimary={'true'} style={styles.margin}/>
+            <ButtonComp onPress={()=>{navigateTo('Consultation')}} text="Consulter" isPrimary={'false'} style={styles.margin}/>
         </ScrollView>
     );
 }
+
+const styles = StyleSheet.create({
+    margin: {
+        marginTop: 16,
+        marginLeft: 30,
+        marginRight: 30,
+    },
+    image: {
+        marginTop: 16,
+        width: 343,
+        height: 215,
+        alignSelf: 'center',
+    },
+});

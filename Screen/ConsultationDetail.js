@@ -7,10 +7,10 @@ import {text} from "../style/text";
 export function ConsultationDetailScreen({navigation}) {
 
     const resendEmail = () => {
-        participants.forEach((participant) => {
-            setTimeout(()=>{return }, 1500);
-            console.log("ORGANISATEUR OSCOUR", participant.email, participant.name, "HEUREUX ELU OSCOUR", "BUDGET OSCOUR");
-            
+        participants.forEach((participant, i) => {
+            setTimeout(
+                ()=>{console.log("ORGANISATEUR OSCOUR", participant.email, participant.name, "HEUREUX ELU OSCOUR", "BUDGET OSCOUR");}, 
+                1100 * i); 
         })
         //sendEmail();
         //navigation.navigate('ConfirmationResendMail');

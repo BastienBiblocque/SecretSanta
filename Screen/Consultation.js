@@ -6,7 +6,7 @@ import {ListFilled} from "../Component/ListFilled";
 import {ListEmpty} from "../Component/ListEmpty";
 
 export function ConsultationScreen() {
-    const [secretSantas, setSecretSantas] = useState(null);
+    const [secretSantas, setSecretSantas] = useState(1);
     return (
         <ScrollView style={background.background}>
             {secretSantas ? <ListFilled/> : <ListEmpty/>}

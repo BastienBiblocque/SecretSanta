@@ -20,7 +20,7 @@ export function ConsultationScreen() {
 
     return (
         <ScrollView style={background.background}>
-            {secretSantas.length ? <ListFilled secretSantas={secretSantas}/> : <ListEmpty/>}
+            {secretSantas?.length ? <ListFilled secretSantas={secretSantas}/> : <ListEmpty/>}
         </ScrollView>
     );
 }

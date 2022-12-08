@@ -1,18 +1,28 @@
-import {Image, ScrollView, StyleSheet, Text} from "react-native";
+import {ActivityIndicator, Image, ScrollView, StyleSheet, Text, View} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {ButtonComp} from "../Component/Button";
 import {text} from "../style/text";
 import {useState} from "react";
+import {Loading} from "../Component/Loading";
 
 export function ConsultationDetailScreen({route, navigation}) {
+
+    const [isLoading, setIsLoading] = useState(false);
     const resendEmail = () => {
-        navigation.navigate('ConfirmationResendMail');
+        setIsLoading(true);
+        //navigation.navigate('ConfirmationResendMail');
     }
 
     const { secretSanta } = route.params;
 
     const [secretSantaDetail] = useState(JSON.parse(secretSanta));
+
+    if  (isLoading) {
+        return (
+            <Loading/>
+        )
+    }
 
 
     return (

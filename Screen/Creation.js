@@ -1,40 +1,67 @@
-import {Image, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
+import {Alert, Image, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {ButtonComp} from "../Component/Button";
 import {Controller, useForm} from "react-hook-form";
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import {Loading} from "../Component/Loading";
+import {useState} from "react";
 export function CreationScreen({navigation}) {
 
+    //TODO DETECTER QUAND ON REMPLIE UN PRENOM ET NON UNE ADRESSE MAIL ET VICE VERSA
+
     const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
+
+    const [isLoading, setIsLoading] = useState(false);
+
     const addPlayer = () => {
         setNumberOfParticipants([...numberOfPlayer, numberOfPlayer.length.toString()]);
     }
     const { control, handleSubmit, formState: { errors } } = useForm({});
 
-    async function saveEvenement(evenement) {
-        const secretSantas = await AsyncStorage.getItem('secretSantas');
-        const secretSantasArray = secretSantas ? JSON.parse(secretSantas) : [];
-        secretSantasArray.push(evenement);
-        await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray));
+    const checkParticipant =  (evenement) => {
+        const allPlayerName = evenement.player.map((player) => player.name);
+        if (allPlayerName.length !== new Set(allPlayerName).size) {
+            return {title: 'Nom similaire', message: "Les noms des participants doivent être différents"};
+        }
+        const allPlayerEmail = evenement.player.map((player) => player.email);
+        if (allPlayerEmail.length !== new Set(allPlayerEmail).size) {
+            return {title: 'Mail similaire', message: "Les mails des participants doivent être différents"};
+        }
+        return false;
     }
 
     const onSubmit = (data) => {
+        setIsLoading(true);
         const evenement = {
             name: data.name,
             budget: data.budget,
             date: data.date,
         }
         const filterData = filter(data);
-        evenement['organisateur'] = filterData.organisateur;
-        evenement['couples'] = generateCouples(filterData.player);
-        saveEvenement(evenement).then();
+        const haveError = checkParticipant(filterData);
+        if  (!haveError) {
+            evenement['organisateur'] = filterData.organisateur;
+            evenement['couples'] = generateCouples(filterData.player);
+            saveEvenement(evenement).then();
+        } else {
+            Alert.alert(
+                haveError.title,
+                haveError.message,
+                [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+            );
+            setIsLoading(false);
+        }
     };
 
     const filter = (data) => {
         const tmp = [];
         const numberSubscribe = Object.keys(data).length / 2;
         for (let i = 0; i < numberSubscribe; i++) {
+            console.log(data['name-' + i])
+            console.log(data['email-' + i])
             if (data['name-' + i] && data['email-' + i])
                 tmp.push({name: data['name-' + i], email: data['email-' + i]});
         }
@@ -52,6 +79,19 @@ export function CreationScreen({navigation}) {
                 couples.push({giver: shuffledPlayer[index], receiver: shuffledPlayer[0]});
         })
         return couples;
+    }
+    async function saveEvenement(evenement) {
+        const secretSantas = await AsyncStorage.getItem('secretSantas');
+        const secretSantasArray = secretSantas ? JSON.parse(secretSantas) : [];
+        secretSantasArray.push(evenement);
+        await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray));
+        await navigation.navigate('ConfirmCreation');
+    }
+
+    if  (isLoading) {
+        return (
+            <Loading/>
+        )
     }
 
     return (
@@ -98,6 +138,9 @@ export function CreationScreen({navigation}) {
                         <Text>Nom</Text>
                         <Controller
                             control={control}
+                            rules={{
+                                required: {value: item === 'Organisateur'},
+                            }}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <TextInput
                                     style={styles.input}
@@ -108,9 +151,13 @@ export function CreationScreen({navigation}) {
                             )}
                             name={`name-${item}`}
                         />
+                        {errors[`name-${item}`] && <Text>This is required.</Text>}
                         <Text>Email</Text>
                         <Controller
                             control={control}
+                            rules={{
+                                required: {value: item === 'Organisateur'},
+                            }}
                             render={({ field: { onChange, onBlur, value } }) => (
                                 <TextInput
                                     style={styles.input}
@@ -121,9 +168,10 @@ export function CreationScreen({navigation}) {
                             )}
                             name={`email-${item}`}
                         />
+                        {errors[`email-${item}`] && <Text>This is required.</Text>}
                     </View>
                 ))}
-                <ButtonComp isPrimary={'false'} onPress={()=>{addPlayer()}} text="Add" style={styles.margin}/>
+                <ButtonComp isPrimary={'false'} onPress={()=>{addPlayer()}} text="Ajouter un participant" style={styles.margin}/>
                 <ButtonComp isPrimary={'true'} onPress={handleSubmit(onSubmit)} text="Créer" style={styles.margin}/>
             </View>
         </ScrollView>

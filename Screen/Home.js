@@ -14,11 +14,11 @@ export function HomeScreen() {
         <ScrollView style={background.background} >
             <Image style={styles.image} source={require('../image/gift.png')}/>
             <Text style={text.text}>Bienvenue dans notre application d’organisation de secret santa !</Text>
-            <Text style={text.text}> Mais qu’est-ce qu’un secret santa ?</Text>
-            <Text style={text.text}>Il s’agit d’un évènement dans lequel les participants offrent un cadeau à un autre participant choisi au hasard ! </Text>
+            <Text style={text.text}>Mais qu’est-ce qu’un secret santa ?</Text>
+            <Text style={text.text}>Il s’agit d’un évènement dans lequel les participants offrent un cadeau à un autre participant choisi au hasard !</Text>
             <Text style={text.text}>Commencez par organiser le vôtre dès maintenant :</Text>
             <ButtonComp onPress={()=>{navigateTo('Creation')}} text="Organiser" isPrimary={'true'} style={styles.margin}/>
-            <ButtonComp onPress={()=>{navigateTo('Consultation')}} text="Consulter" isPrimary={'false'} style={styles.margin}/>
+            <ButtonComp onPress={()=>{navigateTo('ConfirmationResendMail')}} text="Consulter" isPrimary={'false'} style={styles.margin}/>
         </ScrollView>
     );
 }

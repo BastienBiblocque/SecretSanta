@@ -5,8 +5,8 @@ import {useNavigation} from "@react-navigation/native";
 export function SecretCard(props) {
     const navigation = useNavigation();
     return (
-        <Pressable onPress={()=>navigation.navigate('ConsultationDetail',{id:props.id})} style={styles.card}>
-            <Text style={styles.text}>{props.name}</Text>
+        <Pressable onPress={()=>navigation.navigate('ConsultationDetail',{secretSanta:JSON.stringify(props.secretSanta)})} style={styles.card}>
+            <Text style={styles.text}>{props.secretSanta.name}</Text>
         </Pressable>
     );
 }

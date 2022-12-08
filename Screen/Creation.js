@@ -1,79 +1,131 @@
 import {Image, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
-import {Formik} from 'formik';
 import {ButtonComp} from "../Component/Button";
+import {Controller, useForm} from "react-hook-form";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 export function CreationScreen({navigation}) {
-    function createSecretSanta (values)  {
-        navigation.navigate('ConfirmCreation');
+
+    const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
+    const addPlayer = () => {
+        setNumberOfParticipants([...numberOfPlayer, numberOfPlayer.length.toString()]);
+    }
+    const { control, handleSubmit, formState: { errors } } = useForm({});
+
+    async function saveEvenement(evenement) {
+        const secretSantas = await AsyncStorage.getItem('secretSantas');
+        const secretSantasArray = secretSantas ? JSON.parse(secretSantas) : [];
+        secretSantasArray.push(evenement);
+        await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray));
+    }
+
+    const onSubmit = (data) => {
+        const evenement = {
+            name: data.name,
+            budget: data.budget,
+            date: data.date,
+        }
+        const filterData = filter(data);
+        evenement['organisateur'] = filterData.organisateur;
+        evenement['couples'] = generateCouples(filterData.player);
+        saveEvenement(evenement).then();
+    };
+
+    const filter = (data) => {
+        const tmp = [];
+        const numberSubscribe = Object.keys(data).length / 2;
+        for (let i = 0; i < numberSubscribe; i++) {
+            if (data['name-' + i] && data['email-' + i])
+                tmp.push({name: data['name-' + i], email: data['email-' + i]});
+        }
+        tmp.push({name: data['name-Organisateur'], email: data['email-Organisateur']});
+        return {player:tmp, organisateur: data['name-Organisateur']};
+    }
+
+    const generateCouples = (data) => {
+        const couples = [];
+        const shuffledPlayer = data.sort((a, b) => 0.5 - Math.random());
+        shuffledPlayer.forEach((player, index)=>{
+            if (shuffledPlayer[index+ 1])
+                couples.push({giver: shuffledPlayer[index], receiver: shuffledPlayer[index+ 1]});
+            else
+                couples.push({giver: shuffledPlayer[index], receiver: shuffledPlayer[0]});
+        })
+        return couples;
     }
 
     return (
-        <ScrollView style={background.background} >
+        <ScrollView style={background.background}>
             <Image style={styles.image} source={require('../image/tree.png')}/>
-            <Formik
-                initialValues={{ email: '', budget:'5' }}
-                onSubmit={(values) => {
-                    createSecretSanta(values);
-                }}
-            >
-                {({ handleChange, handleBlur, handleSubmit, values }) => (
-                    <View>
-                        <View style={styles.group}>
-                            <Text>Orgnisateur :</Text>
-                            <Text>Nom</Text>
-                            <TextInput
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                style={styles.input}
-                            />
-                            <Text style={styles.label}>Email</Text>
-                            <TextInput
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                style={styles.input}
-                            />
-                        </View>
-                        <View style={styles.group}>
-                            <Text>#1</Text>
-                            <Text>Nom</Text>
-                            <TextInput
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                style={styles.input}
-                            />
-                            <Text style={styles.label}>Email</Text>
-                            <TextInput
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                style={styles.input}
-                            />
-                        </View>
-                        <View style={styles.group}>
-                            <Text>#2</Text>
-                            <Text>Nom</Text>
-                            <TextInput
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                style={styles.input}
-                            />
-                            <Text style={styles.label}>Email</Text>
-                            <TextInput
-                                onChangeText={handleChange('email')}
-                                onBlur={handleBlur('email')}
-                                value={values.email}
-                                style={styles.input}
-                            />
-                        </View>
-                        <ButtonComp isPrimary={'true'} onPress={handleSubmit} text="Créer" style={styles.margin} />
+            <View style={{marginRight:30, marginLeft:30}}>
+                <Text>Nom de l'evenement</Text>
+                <Controller
+                    control={control}
+                    rules={{
+                        required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={styles.input}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                    )}
+                    name='name'
+                />
+                {errors.name && <Text>This is required.</Text>}
+                <Text>Budget</Text>
+                <Controller
+                    control={control}
+                    rules={{
+                        required: true,
+                    }}
+                    render={({ field: { onChange, onBlur, value } }) => (
+                        <TextInput
+                            style={styles.input}
+                            onBlur={onBlur}
+                            onChangeText={onChange}
+                            value={value}
+                        />
+                    )}
+                    name='budget'
+                />
+                {errors.budget && <Text>This is required.</Text>}
+                {numberOfPlayer.map((item, index) => (
+                    <View key={index}>
+                        <Text style={{marginTop:40}}>#{item}</Text>
+                        <Text>Nom</Text>
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    style={styles.input}
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            )}
+                            name={`name-${item}`}
+                        />
+                        <Text>Email</Text>
+                        <Controller
+                            control={control}
+                            render={({ field: { onChange, onBlur, value } }) => (
+                                <TextInput
+                                    style={styles.input}
+                                    onBlur={onBlur}
+                                    onChangeText={onChange}
+                                    value={value}
+                                />
+                            )}
+                            name={`email-${item}`}
+                        />
                     </View>
-                )}
-            </Formik>
+                ))}
+                <ButtonComp isPrimary={'false'} onPress={()=>{addPlayer()}} text="Add" style={styles.margin}/>
+                <ButtonComp isPrimary={'true'} onPress={handleSubmit(onSubmit)} text="Créer" style={styles.margin}/>
+            </View>
         </ScrollView>
     );
 }
@@ -81,6 +133,7 @@ export function CreationScreen({navigation}) {
 const styles = StyleSheet.create({
     margin: {
         marginTop: 16,
+        marginBottom: 16,
         marginLeft: 30,
         marginRight: 30,
     },

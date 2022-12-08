@@ -3,27 +3,28 @@ import * as React from "react";
 import {background} from "../style/background";
 import {ButtonComp} from "../Component/Button";
 import {text} from "../style/text";
+import {useState} from "react";
 
-export function ConsultationDetailScreen({navigation}) {
+export function ConsultationDetailScreen({route, navigation}) {
     const resendEmail = () => {
-        console.log('send email');
         navigation.navigate('ConfirmationResendMail');
     }
-    const participants = [
-        {name: 'Jean',email: 'jean@gmail.com',},
-        {name: 'Julie',email: 'julie@gmail.com',},
-        {name: 'Pierre',email: 'pierre@gmail.com',}]
+
+    const { secretSanta } = route.params;
+
+    const [secretSantaDetail] = useState(JSON.parse(secretSanta));
+
+
     return (
         <ScrollView style={background.background}>
             <Image style={styles.image} source={require('../image/santaAndTree.png')}/>
-            <Text style={text.text}>Organisateur : john doe</Text>
-            <Text style={text.text}>mail : john.doe@gmail.com</Text>
-            <Text style={text.text}>Budget : 5€</Text>
-            {participants.map((participant) => (
-                <Text style={text.text}>{participant.name} - {participant.email}</Text>
+            <Text style={text.text}>Organisateur : {secretSantaDetail.organisateur}</Text>
+            <Text style={text.text}>Budget : {secretSantaDetail.budget}</Text>
+            {secretSantaDetail.couples.map((couple) => (
+                <Text style={text.text}>{couple.giver.name} - {couple.giver.email}</Text>
             ))}
             <ButtonComp text="Renvoyer les mails" isPrimary={'true'} onPress={() => resendEmail()} style={styles.margin}/>
-            <ButtonComp text="Se spoiler" isPrimary={'false'} onPress={() => navigation.navigate('SpoilerDetail')} style={styles.margin}/>
+            <ButtonComp text="Se spoiler" isPrimary={'false'} onPress={() => navigation.navigate('SpoilerDetail',{secretSanta:secretSanta})} style={styles.margin}/>
         </ScrollView>
     );
 }

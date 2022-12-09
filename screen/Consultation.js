@@ -2,8 +2,8 @@ import {ScrollView} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {useEffect, useState} from "react";
-import {ListFilled} from "../Component/ListFilled";
-import {ListEmpty} from "../Component/ListEmpty";
+import {ListFilled} from "../component/ListFilled";
+import {ListEmpty} from "../component/ListEmpty";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export function ConsultationScreen() {

@@ -1,12 +1,12 @@
 import {Alert, Image, ScrollView, StyleSheet, Switch, Text, TextInput, View} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
-import {ButtonComponent} from "../Component/Button";
+import {ButtonComponent} from "../component/Button";
 import {Controller, useFieldArray, useForm} from "react-hook-form";
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import {Loading} from "../Component/Loading";
+import {Loading} from "../component/Loading";
 import {useEffect, useState} from "react";
-import {ErrorMessage} from "../Component/ErrorMessage";
+import {ErrorMessage} from "../component/ErrorMessage";
 export function OldCreationScreen({navigation}) {
 
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION

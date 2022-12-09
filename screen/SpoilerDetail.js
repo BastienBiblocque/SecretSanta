@@ -4,7 +4,7 @@ import { background } from "../style/background";
 import { text } from "../style/text";
 import { margin } from "../style/margin";
 import { useState } from "react";
-import { ButtonComponent } from "../Component/Button";
+import { ButtonComponent } from "../component/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function SpoilerDetailScreen({ navigation, route }) {

@@ -1,14 +1,13 @@
-import { StyleSheet} from 'react-native';
 import * as React from 'react';
 import { NavigationContainer } from '@react-navigation/native';
-import {HomeScreen} from './Screen/Home';
+import {HomeScreen} from './screen/Home';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import {ConfirmationResendMailScreen} from "./Screen/ConfirmationResendMail";
-import {ConfirmCreationScreen} from "./Screen/ConfirmCreation";
-import {CreationScreen} from "./Screen/Creation";
-import {ConsultationDetailScreen} from "./Screen/ConsultationDetail";
-import {ConsultationScreen} from "./Screen/Consultation";
-import {SpoilerDetailScreen} from "./Screen/SpoilerDetail";
+import {ConfirmationResendMailScreen} from "./screen/ConfirmationResendMail";
+import {ConfirmCreationScreen} from "./screen/ConfirmCreation";
+import {CreationScreen} from "./screen/Creation";
+import {ConsultationDetailScreen} from "./screen/ConsultationDetail";
+import {ConsultationScreen} from "./screen/Consultation";
+import {SpoilerDetailScreen} from "./screen/SpoilerDetail";
 
 const Stack = createNativeStackNavigator();
 

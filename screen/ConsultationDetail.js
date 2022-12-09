@@ -1,10 +1,10 @@
 import {Image, ScrollView, StyleSheet, Text} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
-import {ButtonComponent} from "../Component/Button";
+import {ButtonComponent} from "../component/Button";
 import {text} from "../style/text";
 import {useState} from "react";
-import {Loading} from "../Component/Loading";
+import {Loading} from "../component/Loading";
 import {sendAllEmailsWithSetInterval} from "../utils/SendMails"
 
 export function ConsultationDetailScreen({route, navigation}) {
@@ -24,10 +24,12 @@ export function ConsultationDetailScreen({route, navigation}) {
         )
     }
 
+
     return (
         <ScrollView style={background.background}>
+            <Text>test</Text>
             <Image style={styles.image} source={require('../image/santaAndTree.png')}/>
-            <Text style={text.text}>Organisateur : {secretSantaDetail.organisateur}</Text>
+            <Text style={text.text}>Organisateur : {secretSantaDetail.organisateur.name}</Text>
             <Text style={text.text}>Budget : {secretSantaDetail.budget}</Text>
             {secretSantaDetail.couples.map((couple) => (
                 <Text style={text.text}>{couple.giver.name} - {couple.giver.email}</Text>

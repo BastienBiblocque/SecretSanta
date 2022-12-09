@@ -8,7 +8,7 @@ export const sendAllEmailsWithSetInterval = (secretSantaDetail, setIsLoading, na
                 navigation.navigate(nextPageName);
             }
             else{
-                const   organisateurNom = secretSantaDetail.organisateur,
+                const   organisateurNom = secretSantaDetail.organisateur.name,
                         giver = secretSantaDetail.couples[mailsSent].giver,
                         receiver = secretSantaDetail.couples[mailsSent].receiver,
                         budget = secretSantaDetail.budget;

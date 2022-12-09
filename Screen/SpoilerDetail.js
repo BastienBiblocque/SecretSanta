@@ -7,7 +7,7 @@ import { useState } from "react";
 import { ButtonComp } from "../Component/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export function SpoilerDetailScreen({ route }) {
+export function SpoilerDetailScreen({ navigation, route }) {
   const { secretSanta } = route.params;
 
   const [secretSantaDetail] = useState(JSON.parse(secretSanta));
@@ -28,7 +28,10 @@ export function SpoilerDetailScreen({ route }) {
       <ButtonComp
         text="VIDER LA BASE"
         isPrimary={"true"}
-        onPress={() => clearDataBase()}
+        onPress={() => {
+          clearDataBase();
+          navigation.navigate("Home");
+        }}
         style={margin.margin}
       />
     </ScrollView>

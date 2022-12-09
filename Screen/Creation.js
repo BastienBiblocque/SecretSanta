@@ -10,6 +10,7 @@ import {ErrorMessage} from "../Component/ErrorMessage";
 export function CreationScreen({navigation}) {
 
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
+    // CHECK HOOKFORM
 
     const [game, setGame] = useState([{}]);
 
@@ -28,7 +29,6 @@ export function CreationScreen({navigation}) {
     useEffect(()=>{
         console.log(watch());
     },[watch])
-
 
     const onSubmit = (data) => {
         setIsLoading(true);
@@ -65,44 +65,6 @@ export function CreationScreen({navigation}) {
             }
         }
     };
-
-    const filter = (data) => {
-        const tmp = [];
-        const numberSubscribe = Object.keys(data).length / 2;
-        for (let i = 0; i < numberSubscribe; i++) {
-            if (data['name-' + i] && data['email-' + i])
-                tmp.push({name: data['name-' + i], email: data['email-' + i]});
-            else if (data['name-' + i] || data['email-' + i]){
-                return {error:true};
-            }
-
-        }
-        if (isEnabled)
-            tmp.push({name: data['name-Organisateur'], email: data['email-Organisateur']});
-        return {player:tmp, organisateur: data['name-Organisateur'], error:false};
-    }
-
-    const generateCouples = (data) => {
-        const couples = [];
-        const shuffledPlayer = data.sort((a, b) => 0.5 - Math.random());
-        shuffledPlayer.forEach((player, index)=>{
-            if (shuffledPlayer[index+ 1])
-                couples.push({giver: shuffledPlayer[index], receiver: shuffledPlayer[index+ 1]});
-            else
-                couples.push({giver: shuffledPlayer[index], receiver: shuffledPlayer[0]});
-        })
-        return couples;
-    }
-    async function saveEvenement(evenement) {
-        const secretSantas = await AsyncStorage.getItem('secretSantas');
-        const secretSantasArray = secretSantas ? JSON.parse(secretSantas) : [];
-        secretSantasArray.push(evenement);
-        await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray));
-        await navigation.navigate('ConfirmCreation');
-    }
-
-    const [isEnabled, setIsEnabled] = useState(true);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     if  (isLoading) {
         return (

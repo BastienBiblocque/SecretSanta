@@ -7,11 +7,13 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Loading} from "../Component/Loading";
 import {useState} from "react";
 import {ErrorMessage} from "../Component/ErrorMessage";
+import {AlertComponent} from "../Component/Alert";
 export function CreationScreen({navigation}) {
 
     //TODO DETECTER QUAND ON REMPLIE UN PRENOM ET NON UNE ADRESSE MAIL ET VICE VERSA
     //TODO EMPECHER ORGANISATEUR DE JOUER
     //TODO MINIMUM 3 JOUEURS
+    //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
 
     const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
 
@@ -48,13 +50,7 @@ export function CreationScreen({navigation}) {
             evenement['couples'] = generateCouples(filterData.player);
             saveEvenement(evenement).then();
         } else {
-            Alert.alert(
-                haveError.title,
-                haveError.message,
-                [
-                    { text: "OK", onPress: () => console.log("OK Pressed") }
-                ]
-            );
+            <AlertComponent title={haveError.title} message={haveError.message} />
             setIsLoading(false);
         }
     };

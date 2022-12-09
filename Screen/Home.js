@@ -1,13 +1,12 @@
 import { Image, ScrollView, Text, StyleSheet } from "react-native";
 import * as React from "react";
-import { ButtonComp } from "../Component/Button";
+import { ButtonComponent } from "../Component/Button";
 import { useNavigation } from "@react-navigation/native";
 import { background } from "../style/background";
 import { text } from "../style/text";
 import { margin } from "../style/margin";
 
-export function HomeScreen() {
-  const navigation = useNavigation();
+export function HomeScreen({navigation}) {
   const navigateTo = (screen) => {
     navigation.navigate(screen);
   };
@@ -25,7 +24,7 @@ export function HomeScreen() {
       <Text style={text.text}>
         Commencez par organiser le vôtre dès maintenant :
       </Text>
-      <ButtonComp
+      <ButtonComponent
         onPress={() => {
           navigateTo("Creation");
         }}
@@ -33,7 +32,7 @@ export function HomeScreen() {
         isPrimary={"true"}
         style={margin.margin}
       />
-      <ButtonComp
+      <ButtonComponent
         onPress={() => {
           navigateTo("Consultation");
         }}

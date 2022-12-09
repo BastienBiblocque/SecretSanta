@@ -1,14 +1,17 @@
 import {Alert, Image, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
-import {ButtonComp} from "../Component/Button";
+import {ButtonComponent} from "../Component/Button";
 import {Controller, useForm} from "react-hook-form";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Loading} from "../Component/Loading";
 import {useState} from "react";
+import {ErrorMessage} from "../Component/ErrorMessage";
 export function CreationScreen({navigation}) {
 
     //TODO DETECTER QUAND ON REMPLIE UN PRENOM ET NON UNE ADRESSE MAIL ET VICE VERSA
+    //TODO EMPECHER ORGANISATEUR DE JOUER
+    //TODO MINIMUM 3 JOUEURS
 
     const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
 
@@ -98,7 +101,7 @@ export function CreationScreen({navigation}) {
         <ScrollView style={background.background}>
             <Image style={styles.image} source={require('../image/tree.png')}/>
             <View style={{marginRight:30, marginLeft:30}}>
-                <Text>Nom de l'evenement</Text>
+                <Text style={styles.label}>Nom de l'evenement</Text>
                 <Controller
                     control={control}
                     rules={{
@@ -114,8 +117,8 @@ export function CreationScreen({navigation}) {
                     )}
                     name='name'
                 />
-                {errors.name && <Text>This is required.</Text>}
-                <Text>Budget</Text>
+                {errors.name && <ErrorMessage message="Le nom de l'evenement est requis." />}
+                <Text style={styles.label}>Budget</Text>
                 <Controller
                     control={control}
                     rules={{
@@ -131,11 +134,11 @@ export function CreationScreen({navigation}) {
                     )}
                     name='budget'
                 />
-                {errors.budget && <Text>This is required.</Text>}
+                {errors.budget && <ErrorMessage message='Le budget est requis.' />}
                 {numberOfPlayer.map((item, index) => (
                     <View key={index}>
                         <Text style={{marginTop:40}}>#{item}</Text>
-                        <Text>Nom</Text>
+                        <Text style={styles.label}>Nom</Text>
                         <Controller
                             control={control}
                             rules={{
@@ -151,8 +154,8 @@ export function CreationScreen({navigation}) {
                             )}
                             name={`name-${item}`}
                         />
-                        {errors[`name-${item}`] && <Text>This is required.</Text>}
-                        <Text>Email</Text>
+                        {errors[`name-${item}`] && <ErrorMessage message='Le nom est requis.' />}
+                        <Text style={styles.label}>Email</Text>
                         <Controller
                             control={control}
                             rules={{
@@ -168,11 +171,11 @@ export function CreationScreen({navigation}) {
                             )}
                             name={`email-${item}`}
                         />
-                        {errors[`email-${item}`] && <Text>This is required.</Text>}
+                        {errors[`email-${item}`] && <ErrorMessage message='Le mail est requis.' />}
                     </View>
                 ))}
-                <ButtonComp isPrimary={'false'} onPress={()=>{addPlayer()}} text="Ajouter un participant" style={styles.margin}/>
-                <ButtonComp isPrimary={'true'} onPress={handleSubmit(onSubmit)} text="Créer" style={styles.margin}/>
+                <ButtonComponent isPrimary={'false'} onPress={()=>{addPlayer()}} text="Ajouter un participant" style={styles.margin}/>
+                <ButtonComponent isPrimary={'true'} onPress={handleSubmit(onSubmit)} text="Créer" style={styles.margin}/>
             </View>
         </ScrollView>
     );

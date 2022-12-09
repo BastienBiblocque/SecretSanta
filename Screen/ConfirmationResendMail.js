@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text } from "react-native";
+import {Image, ScrollView, StyleSheet, Text} from "react-native";
 import * as React from "react";
 import { background } from "../style/background";
 import { text } from "../style/text";

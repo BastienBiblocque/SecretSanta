@@ -1,9 +1,9 @@
-import {Image, ScrollView, StyleSheet, Text} from "react-native";
+import { Image, ScrollView, StyleSheet, Text } from "react-native";
 import * as React from "react";
 import { background } from "../style/background";
 import { text } from "../style/text";
 import { margin } from "../style/margin";
-import { ButtonComp } from "./Button";
+import { ButtonComponent } from "./Button";
 import { useNavigation } from "@react-navigation/native";
 
 export function ListEmpty() {
@@ -14,7 +14,7 @@ export function ListEmpty() {
       <Text style={text.text}>
         Vous n’avez pas encore organisé de secret santa
       </Text>
-      <ButtonComp
+      <ButtonComponent
         onPress={() => {
           navigation.navigate("Creation");
         }}

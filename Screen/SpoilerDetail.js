@@ -4,7 +4,7 @@ import { background } from "../style/background";
 import { text } from "../style/text";
 import { margin } from "../style/margin";
 import { useState } from "react";
-import { ButtonComp } from "../Component/Button";
+import { ButtonComponent } from "../Component/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function SpoilerDetailScreen({ navigation, route }) {
@@ -25,7 +25,7 @@ export function SpoilerDetailScreen({ navigation, route }) {
           {couple.giver.name} -> {couple.receiver.name}
         </Text>
       ))}
-      <ButtonComp
+      <ButtonComponent
         text="VIDER LA BASE"
         isPrimary={"true"}
         onPress={() => {

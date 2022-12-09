@@ -1,4 +1,4 @@
-import {Alert, Image, ScrollView, Switch, Text, TextInput, View} from "react-native";
+import {Image, ScrollView, Switch, Text, TextInput, View} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {ButtonComponent} from "../component/Button";
@@ -13,15 +13,17 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import {sendAllEmailsWithSetInterval} from "../utils/SendMails";
 import {form} from "../style/form";
 import {image} from "../style/image";
+import {AlertCreate} from "../component/Alerte";
+
 export function CreationScreen({navigation}) {
 
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
 
     const [isLoading, setIsLoading] = useState(false);
 
-    const { control, value, formState: { errors,  }, handleSubmit} = useForm({
+    const {control, value, formState: {errors,}, handleSubmit} = useForm({
         defaultValues: {
-            players: [{ name: "", email: "" },{ name: "", email: "" },{ name: "", email: "" }],
+            players: [{name: "", email: ""}, {name: "", email: ""}, {name: "", email: ""}],
         }
     });
 
@@ -35,54 +37,41 @@ export function CreationScreen({navigation}) {
 
         const filterData = filterPlayers(data.players);
 
-        if (filterData.error)
-            displayAlertForNotAllData()
-        else {
+        if (filterData.error) {
+            AlertCreate('Champs manquant', 'Vous avez remplis un nom et non une adresse mail ou vice versa');
+            setIsLoading(false);
+        } else {
             if (isEnabled)
-                filterData.push({email: data.organisateurEmail, name:data.organisateurName});
+                filterData.push({email: data.organisateurEmail, name: data.organisateurName});
             const evenement = {
                 name: data.name,
                 budget: data.budget,
-                organisateur: {email: data.organisateurEmail, name:data.organisateurName},
+                organisateur: {email: data.organisateurEmail, name: data.organisateurName},
                 players: filterData,
             }
             const haveError = checkParticipant(evenement.players);
-            if (haveError)
-                displayErrorAlert(haveError);
-            else {
+            if (haveError) {
+                AlertCreate(haveError.title, haveError.message)
+                setIsLoading(false);
+            } else {
                 evenement['couples'] = generateCouples(evenement.players);
                 saveEvenement(evenement).then()
             }
         }
     };
+
     async function saveEvenement(evenement) {
         await AsyncStorage.getItem('secretSantas').then(async (secretSantas) => {
                 const secretSantasArray = secretSantas ? JSON.parse(secretSantas) : [];
                 secretSantasArray.push(evenement);
-                await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray)).then(()=>{
+                await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray)).then(() => {
                     sendAllEmailsWithSetInterval(evenement, setIsLoading, navigation, 'ConfirmCreation');
                 })
             }
         );
     }
 
-    function displayAlertForNotAllData() {
-        Alert.alert(
-            'Champs manquant',
-            'Vous avez remplis un nom et non une adresse mail ou vice versa',
-            [{ text: "OK", onPress: () => setIsLoading(false) }]
-        )
-    }
-
-    function displayErrorAlert(haveError) {
-        Alert.alert(
-            haveError.title,
-            haveError.message,
-            [{ text: "OK", onPress: () => setIsLoading(false) }]
-        )
-    }
-
-    if  (isLoading) {
+    if (isLoading) {
         return (
             <Loading/>
         )
@@ -90,8 +79,8 @@ export function CreationScreen({navigation}) {
 
     return (
         <ScrollView style={background.background}>
-            <Image style={[image.image, {width:283, height: 200}]} source={require('../image/tree.png')}/>
-            <View style={{marginRight:30, marginLeft:30}}>
+            <Image style={[image.image, {width: 283, height: 200}]} source={require('../image/tree.png')}/>
+            <View style={{marginRight: 30, marginLeft: 30}}>
                 <View>
                     <Text style={form.label}>Nom de l'evenement</Text>
                     <Controller
@@ -99,7 +88,7 @@ export function CreationScreen({navigation}) {
                         control={control}
                         value={value}
                         rules={{required: true}}
-                        render={({ field: { onChange, onBlur, value } }) => (
+                        render={({field: {onChange, onBlur, value}}) => (
                             <TextInput
                                 style={form.input}
                                 onBlur={onBlur}
@@ -108,7 +97,7 @@ export function CreationScreen({navigation}) {
                             />
                         )}
                     />
-                    {errors.name && <ErrorMessage message="Le nome de l'evenement est requis." />}
+                    {errors.name && <ErrorMessage message="Le nome de l'evenement est requis."/>}
 
                     <Text style={form.label}>Budget</Text>
                     <Controller
@@ -116,7 +105,7 @@ export function CreationScreen({navigation}) {
                         control={control}
                         value={value}
                         rules={{required: true}}
-                        render={({ field: { onChange, onBlur, value } }) => (
+                        render={({field: {onChange, onBlur, value}}) => (
                             <TextInput
                                 style={form.input}
                                 onBlur={onBlur}
@@ -125,7 +114,7 @@ export function CreationScreen({navigation}) {
                             />
                         )}
                     />
-                    {errors.budget && <ErrorMessage message="Le budget est requis." />}
+                    {errors.budget && <ErrorMessage message="Le budget est requis."/>}
 
                 </View>
                 <View>
@@ -135,7 +124,7 @@ export function CreationScreen({navigation}) {
                         control={control}
                         value={value}
                         rules={{required: true}}
-                        render={({ field: { onChange, onBlur, value } }) => (
+                        render={({field: {onChange, onBlur, value}}) => (
                             <TextInput
                                 style={form.input}
                                 onBlur={onBlur}
@@ -144,14 +133,14 @@ export function CreationScreen({navigation}) {
                             />
                         )}
                     />
-                    {errors.organisateurName && <ErrorMessage message="Le nom de l'organisateur est requis." />}
+                    {errors.organisateurName && <ErrorMessage message="Le nom de l'organisateur est requis."/>}
                     <Text style={form.label}>Email de l'organisateur</Text>
                     <Controller
                         name={`organisateurEmail`}
                         control={control}
                         value={value}
                         rules={{required: true}}
-                        render={({ field: { onChange, onBlur, value } }) => (
+                        render={({field: {onChange, onBlur, value}}) => (
                             <TextInput
                                 style={form.input}
                                 onBlur={onBlur}
@@ -160,11 +149,12 @@ export function CreationScreen({navigation}) {
                             />
                         )}
                     />
-                    {errors.organisateurEmail && <ErrorMessage message="Le nom de l'organisateur est requis." />}
+                    {errors.organisateurEmail && <ErrorMessage message="Le nom de l'organisateur est requis."/>}
                     <View>
-                        <Text style={{marginTop:10, marginBottom:10, color:'#386641'}}>L'organisateur participe au secret santa</Text>
+                        <Text style={{marginTop: 10, marginBottom: 10, color: '#386641'}}>L'organisateur participe au
+                            secret santa</Text>
                         <Switch
-                            trackColor={{ true: "#BC4749", false: "#767577" }}
+                            trackColor={{true: "#BC4749", false: "#767577"}}
                             thumbColor={isEnabled ? "#fee374" : "#f4f3f4"}
                             ios_backgroundColor="#3e3e3e"
                             onValueChange={toggleSwitch}
@@ -180,7 +170,7 @@ export function CreationScreen({navigation}) {
                                 name={`players.${index}.name`}
                                 control={control}
                                 value={value}
-                                render={({ field: { onChange, onBlur, value } }) => (
+                                render={({field: {onChange, onBlur, value}}) => (
                                     <TextInput
                                         style={form.input}
                                         onBlur={onBlur}
@@ -189,14 +179,15 @@ export function CreationScreen({navigation}) {
                                     />
                                 )}
                             />
-                            {errors[`players.${index}.name`] && <ErrorMessage message="Le nom de l'organisateur est requis." />}
+                            {errors[`players.${index}.name`] &&
+                                <ErrorMessage message="Le nom de l'organisateur est requis."/>}
 
                             <Text style={form.label}>#{index + 1} email</Text>
                             <Controller
                                 name={`players.${index}.email`}
                                 control={control}
                                 value={value}
-                                render={({ field: { onChange, onBlur, value } }) => (
+                                render={({field: {onChange, onBlur, value}}) => (
                                     <TextInput
                                         style={form.input}
                                         onBlur={onBlur}
@@ -205,14 +196,21 @@ export function CreationScreen({navigation}) {
                                     />
                                 )}
                             />
-                            {errors[`players.${index}.email`] && <ErrorMessage message="Le nom de l'organisateur est requis." />}
+                            {errors[`players.${index}.email`] &&
+                                <ErrorMessage message="Le nom de l'organisateur est requis."/>}
 
                         </View>
                     );
                 })}
-                <ButtonComponent isPrimary={'false'} onPress={()=>{append({ firstName: '', lastName: '' });}} text="Ajouter un participant" style={form.margin}/>
+                <ButtonComponent isPrimary={'false'} onPress={() => {
+                    append({firstName: '', lastName: ''});
+                }} text="Ajouter un participant" style={form.margin}/>
                 <ButtonComponent isPrimary={'true'} onPress={handleSubmit(onSubmit)} text="Créer" style={form.margin}/>
             </View>
+            <ButtonComponent isPrimary={'true'} onPress={() => {
+                AlertCreate('test', 'test')
+            }} text="alert" style={form.margin}/>
+
         </ScrollView>
     );
 }

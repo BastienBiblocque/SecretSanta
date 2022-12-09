@@ -97,11 +97,11 @@ const sendEmailWithSetInterval = (organisateur, destinataireMail, destinataireCa
         body: JSON.stringify(payloadBody)
     };
 
-    console.log(    "organisateur : " + organisateur + "budget : " + budget + "destinataire mail : ", destinataireMail.name + "-" 
-                    + destinataireMail.email, "destinataireCadeau : " + destinataireCadeau.name + "\n");
+    // console.log(    "organisateur : " + organisateur + "budget : " + budget + "destinataire mail : ", destinataireMail.name + "-" 
+    //                 + destinataireMail.email, "destinataireCadeau : " + destinataireCadeau.name + "\n");
     try{
         fetch("https://api.emailjs.com/api/v1.0/email/send", fullPayload)
-        .then(response => console.log(response))
+        // .then(response => console.log(response))
     }
     catch(e){
         console.log(e);

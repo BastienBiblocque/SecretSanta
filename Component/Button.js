@@ -2,7 +2,7 @@ import {Pressable, StyleSheet, Text} from "react-native";
 import * as React from "react";
 import {useEffect} from "react";
 
-export function ButtonComp(props) {
+export function ButtonComponent(props) {
     useEffect(() => {
         if (props.primary) {
             styles.button.backgroundColor = '#1E90FF';

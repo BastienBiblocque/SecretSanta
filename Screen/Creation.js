@@ -1,4 +1,4 @@
-import {Alert, Image, ScrollView, StyleSheet, Text, TextInput, View} from "react-native";
+import {Alert, Image, ScrollView, StyleSheet, Switch, Text, TextInput, View} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {ButtonComponent} from "../Component/Button";
@@ -7,12 +7,9 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Loading} from "../Component/Loading";
 import {useState} from "react";
 import {ErrorMessage} from "../Component/ErrorMessage";
-import {AlertComponent} from "../Component/Alert";
 export function CreationScreen({navigation}) {
 
     //TODO DETECTER QUAND ON REMPLIE UN PRENOM ET NON UNE ADRESSE MAIL ET VICE VERSA
-    //TODO EMPECHER ORGANISATEUR DE JOUER
-    //TODO MINIMUM 3 JOUEURS
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
 
     const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
@@ -33,6 +30,10 @@ export function CreationScreen({navigation}) {
         if (allPlayerEmail.length !== new Set(allPlayerEmail).size) {
             return {title: 'Mail similaire', message: "Les mails des participants doivent être différents"};
         }
+        console.log(allPlayerName.length)
+        if (allPlayerName.length < 3) {
+            return {title: 'Nombre insufisant', message: "Vous devez inscrire au moins 3 personnes pour créer un évenement"};
+        }
         return false;
     }
 
@@ -50,7 +51,13 @@ export function CreationScreen({navigation}) {
             evenement['couples'] = generateCouples(filterData.player);
             saveEvenement(evenement).then();
         } else {
-            <AlertComponent title={haveError.title} message={haveError.message} />
+            Alert.alert(
+                haveError.title,
+                haveError.message,
+                [
+                    { text: "OK", onPress: () => console.log("OK Pressed") }
+                ]
+            )
             setIsLoading(false);
         }
     };
@@ -64,7 +71,8 @@ export function CreationScreen({navigation}) {
             if (data['name-' + i] && data['email-' + i])
                 tmp.push({name: data['name-' + i], email: data['email-' + i]});
         }
-        tmp.push({name: data['name-Organisateur'], email: data['email-Organisateur']});
+        if (isEnabled)
+            tmp.push({name: data['name-Organisateur'], email: data['email-Organisateur']});
         return {player:tmp, organisateur: data['name-Organisateur']};
     }
 
@@ -86,6 +94,9 @@ export function CreationScreen({navigation}) {
         await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray));
         await navigation.navigate('ConfirmCreation');
     }
+
+    const [isEnabled, setIsEnabled] = useState(true);
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     if  (isLoading) {
         return (
@@ -131,6 +142,17 @@ export function CreationScreen({navigation}) {
                     name='budget'
                 />
                 {errors.budget && <ErrorMessage message='Le budget est requis.' />}
+
+                <View>
+                    <Text style={{marginTop:10, marginBottom:10}}>L'oganisateur participe au secret santa</Text>
+                    <Switch
+                        trackColor={{ true: "#BC4749", false: "#767577" }}
+                        thumbColor={isEnabled ? "#fee374" : "#f4f3f4"}
+                        ios_backgroundColor="#3e3e3e"
+                        onValueChange={toggleSwitch}
+                        value={isEnabled}
+                    />
+                </View>
                 {numberOfPlayer.map((item, index) => (
                     <View key={index}>
                         <Text style={{marginTop:40}}>#{item}</Text>

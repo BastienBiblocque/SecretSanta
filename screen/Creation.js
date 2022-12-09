@@ -10,6 +10,7 @@ import {filterPlayers} from "../utils/filterPlayers";
 import {checkParticipant} from "../utils/checkParticipant";
 import {generateCouples} from "../utils/generateCouple";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {sendAllEmailsWithSetInterval} from "../utils/SendMails";
 export function CreationScreen({navigation}) {
 
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
@@ -38,9 +39,10 @@ export function CreationScreen({navigation}) {
             haveError.title,
             haveError.message,
             [
-                { text: "OK", onPress: () => console.log("OK Pressed") }
+                { text: "OK", onPress: () => setIsLoading(false) }
             ]
         )
+
     }
 
     const onSubmit = (data) => {
@@ -63,16 +65,16 @@ export function CreationScreen({navigation}) {
                 displayErrorAlert(haveError);
             else {
                 evenement['couples'] = generateCouples(evenement.players);
-                saveEvenement(evenement).then();
+                saveEvenement(evenement).then()
             }
         }
     };
     async function saveEvenement(evenement) {
-        const secretSantas = await AsyncStorage.getItem('secretSantas').then(async () => {
+        await AsyncStorage.getItem('secretSantas').then(async (secretSantas) => {
                 const secretSantasArray = secretSantas ? JSON.parse(secretSantas) : [];
                 secretSantasArray.push(evenement);
-                await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray)).then(async () => {
-                    await navigation.navigate('ConfirmCreation');
+                await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray)).then(()=>{
+                    sendAllEmailsWithSetInterval(evenement, setIsLoading, navigation, 'ConfirmCreation');
                 })
             }
         );
@@ -83,10 +85,9 @@ export function CreationScreen({navigation}) {
             'Champs manquant',
             'Vous avez remplis un nom et non une adresse mail ou vice versa',
             [
-                { text: "OK", onPress: () => console.log("OK Pressed") }
+                { text: "OK", onPress: () => setIsLoading(false) }
             ]
         )
-        setIsLoading(false);
     }
 
     if  (isLoading) {
@@ -181,7 +182,7 @@ export function CreationScreen({navigation}) {
                 </View>
                 {fields.map((item, index) => {
                     return (
-                        <View>
+                        <View key={index}>
                             <Text style={styles.label}>#{index + 1} nom</Text>
                             <Controller
                                 name={`players.${index}.name`}

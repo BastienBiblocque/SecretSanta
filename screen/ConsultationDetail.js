@@ -27,7 +27,6 @@ export function ConsultationDetailScreen({route, navigation}) {
 
     return (
         <ScrollView style={background.background}>
-            <Text>test</Text>
             <Image style={styles.image} source={require('../image/santaAndTree.png')}/>
             <Text style={text.text}>Organisateur : {secretSantaDetail.organisateur.name}</Text>
             <Text style={text.text}>Budget : {secretSantaDetail.budget}</Text>

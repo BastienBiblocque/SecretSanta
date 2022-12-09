@@ -1,10 +1,10 @@
-import { Image, ScrollView, Text, StyleSheet } from "react-native";
+import { Image, ScrollView, Text } from "react-native";
 import * as React from "react";
 import { ButtonComponent } from "../component/Button";
-import { useNavigation } from "@react-navigation/native";
 import { background } from "../style/background";
 import { text } from "../style/text";
 import { margin } from "../style/margin";
+import {image} from "../style/image";
 
 export function HomeScreen({ navigation }) {
   const navigateTo = (screen) => {
@@ -12,7 +12,7 @@ export function HomeScreen({ navigation }) {
   };
   return (
     <ScrollView style={background.background}>
-      <Image style={styles.image} source={require("../image/gift.png")} />
+      <Image style={[image.image, {width:343, height: 215}]} source={require("../image/gift.png")} />
       <Text style={text.text}>
         Bienvenue dans notre application d’organisation de secret santa !
       </Text>
@@ -43,12 +43,3 @@ export function HomeScreen({ navigation }) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  image: {
-    marginTop: 16,
-    width: 343,
-    height: 215,
-    alignSelf: "center",
-  },
-});

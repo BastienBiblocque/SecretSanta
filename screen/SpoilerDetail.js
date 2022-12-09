@@ -1,4 +1,4 @@
-import { Image, ScrollView, StyleSheet, Text } from "react-native";
+import { Image, ScrollView, Text } from "react-native";
 import * as React from "react";
 import { background } from "../style/background";
 import { text } from "../style/text";
@@ -6,6 +6,7 @@ import { margin } from "../style/margin";
 import { useState } from "react";
 import { ButtonComponent } from "../component/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {image} from "../style/image";
 
 export function SpoilerDetailScreen({ navigation, route }) {
   const { secretSanta } = route.params;
@@ -18,7 +19,7 @@ export function SpoilerDetailScreen({ navigation, route }) {
 
   return (
     <ScrollView style={background.background}>
-      <Image style={styles.image} source={require("../image/skate.png")} />
+      <Image style={[image.image, {width:250, height: 200}]} source={require("../image/skate.png")} />
       <Text style={text.text}>Santa -> Destinataire</Text>
       {secretSantaDetail.couples.map((couple, key) => (
         <Text key={key} style={text.text}>
@@ -37,12 +38,3 @@ export function SpoilerDetailScreen({ navigation, route }) {
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  image: {
-    marginTop: 16,
-    width: 250,
-    height: 200,
-    alignSelf: "center",
-  },
-});

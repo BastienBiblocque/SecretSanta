@@ -14,6 +14,9 @@ export function CreationScreen({navigation}) {
 
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
 
+    const [game, setGame] = useState([{}]);
+
+    const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -226,29 +229,29 @@ export function CreationScreen({navigation}) {
 }
 
 const styles = StyleSheet.create({
-    margin: {
-        marginTop: 16,
-        marginBottom: 16,
-        marginLeft: 30,
-        marginRight: 30,
-    },
-    image: {
-        marginTop: 16,
-        width: 283,
-        height: 200,
-        alignSelf: 'center',
-    },
-    input: {
-        height: 40,
-        borderWidth: 1,
-        borderColor: '#386641',
-        marginTop: 10,
-    },
-    group: {
-        margin: 12,
-        padding: 10,
-    },
-    label: {
-        paddingTop: 10,
-    }
+  margin: {
+    marginTop: 16,
+    marginBottom: 16,
+    marginLeft: 30,
+    marginRight: 30,
+  },
+  image: {
+    marginTop: 16,
+    width: 283,
+    height: 200,
+    alignSelf: "center",
+  },
+  input: {
+    height: 40,
+    borderWidth: 1,
+    borderColor: "#386641",
+    marginTop: 10,
+  },
+  group: {
+    margin: 12,
+    padding: 10,
+  },
+  label: {
+    paddingTop: 10,
+  },
 });

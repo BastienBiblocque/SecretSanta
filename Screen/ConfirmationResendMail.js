@@ -3,7 +3,7 @@ import * as React from "react";
 import { background } from "../style/background";
 import { text } from "../style/text";
 import { margin } from "../style/margin";
-import { ButtonComponent } from "../Component/Button";
+import { ButtonComponent } from "../component/Button";
 
 export function ConfirmationResendMailScreen({ navigation }) {
   return (

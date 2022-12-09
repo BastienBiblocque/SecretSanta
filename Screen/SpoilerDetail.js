@@ -3,7 +3,7 @@ import * as React from "react";
 import {background} from "../style/background";
 import {text} from "../style/text";
 import {useState} from "react";
-import {ButtonComp} from "../Component/Button";
+import {ButtonComponent} from "../Component/Button";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export function SpoilerDetailScreen({route}) {
@@ -22,7 +22,7 @@ export function SpoilerDetailScreen({route}) {
             {secretSantaDetail.couples.map((couple, key) => (
                 <Text key={key} style={text.text}>{couple.giver.name} -> {couple.receiver.name}</Text>
             ))}
-            <ButtonComp text="VIDER LA BASE" isPrimary={'true'} onPress={() => clearDataBase()} style={styles.margin}/>
+            <ButtonComponent text="VIDER LA BASE" isPrimary={'true'} onPress={() => clearDataBase()} style={styles.margin}/>
 
         </ScrollView>
     );

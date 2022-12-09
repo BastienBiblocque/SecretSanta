@@ -2,14 +2,14 @@ import {Image, ScrollView, StyleSheet, Text} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {text} from "../style/text";
-import {ButtonComp} from "../Component/Button";
+import {ButtonComponent} from "../Component/Button";
 
 export function ConfirmationResendMailScreen({navigation}) {
     return (
         <ScrollView style={background.background}>
             <Image style={styles.image} source={require('../image/snowman.png')}/>
             <Text style={text.text}>Les mails ont été envoyés avec succès.</Text>
-            <ButtonComp onPress={()=> {navigation.navigate('Consultation');}} text="Continuer" isPrimary={'true'} style={styles.margin}/>
+            <ButtonComponent onPress={()=> {navigation.navigate('Consultation');}} text="Continuer" isPrimary={'true'} style={styles.margin}/>
         </ScrollView>
     );
 }

@@ -1,6 +1,6 @@
 import {Image, ScrollView, Text, StyleSheet} from "react-native";
 import * as React from "react";
-import {ButtonComp} from "../Component/Button";
+import {ButtonComponent} from "../Component/Button";
 import {useNavigation} from "@react-navigation/native";
 import {background} from "../style/background";
 import {text} from "../style/text";
@@ -17,8 +17,8 @@ export function HomeScreen() {
             <Text style={text.text}>Mais qu’est-ce qu’un secret santa ?</Text>
             <Text style={text.text}>Il s’agit d’un évènement dans lequel les participants offrent un cadeau à un autre participant choisi au hasard !</Text>
             <Text style={text.text}>Commencez par organiser le vôtre dès maintenant :</Text>
-            <ButtonComp onPress={()=>{navigateTo('Creation')}} text="Organiser" isPrimary={'true'} style={styles.margin}/>
-            <ButtonComp onPress={()=>{navigateTo('Consultation')}} text="Consulter" isPrimary={'false'} style={styles.margin}/>
+            <ButtonComponent onPress={()=>{navigateTo('Creation')}} text="Organiser" isPrimary={'true'} style={styles.margin}/>
+            <ButtonComponent onPress={()=>{navigateTo('Consultation')}} text="Consulter" isPrimary={'false'} style={styles.margin}/>
         </ScrollView>
     );
 }

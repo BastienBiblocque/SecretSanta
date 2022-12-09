@@ -2,7 +2,7 @@ import {Image, ScrollView, StyleSheet, Text} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {text} from "../style/text";
-import {ButtonComp} from "./Button";
+import {ButtonComponent} from "./Button";
 import {useNavigation} from "@react-navigation/native";
 
 export function ListEmpty() {
@@ -11,7 +11,7 @@ export function ListEmpty() {
         <ScrollView style={background.background}>
             <Image style={styles.image} source={require('../image/box.png')}/>
             <Text style={text.text}>Vous n’avez pas encore organisé de secret santa</Text>
-            <ButtonComp onPress={()=> {navigation.navigate('Creation');}} text="Organiser" isPrimary={'true'} style={styles.margin}/>
+            <ButtonComponent onPress={()=> {navigation.navigate('Creation');}} text="Organiser" isPrimary={'true'} style={styles.margin}/>
         </ScrollView>
     );
 }

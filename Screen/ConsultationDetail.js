@@ -1,7 +1,7 @@
-import {ActivityIndicator, Image, ScrollView, StyleSheet, Text, View} from "react-native";
+import {Image, ScrollView, StyleSheet, Text} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
-import {ButtonComp} from "../Component/Button";
+import {ButtonComponent} from "../Component/Button";
 import {text} from "../style/text";
 import {useState} from "react";
 import {Loading} from "../Component/Loading";
@@ -33,8 +33,8 @@ export function ConsultationDetailScreen({route, navigation}) {
             {secretSantaDetail.couples.map((couple) => (
                 <Text style={text.text}>{couple.giver.name} - {couple.giver.email}</Text>
             ))}
-            <ButtonComp text="Renvoyer les mails" isPrimary={'true'} onPress={() => resendEmail()} style={styles.margin}/>
-            <ButtonComp text="Se spoiler" isPrimary={'false'} onPress={() => navigation.navigate('SpoilerDetail',{secretSanta:secretSanta})} style={styles.margin}/>
+            <ButtonComponent text="Renvoyer les mails" isPrimary={'true'} onPress={() => resendEmail()} style={styles.margin}/>
+            <ButtonComponent text="Se spoiler" isPrimary={'false'} onPress={() => navigation.navigate('SpoilerDetail',{secretSanta:secretSanta})} style={styles.margin}/>
         </ScrollView>
     );
 }

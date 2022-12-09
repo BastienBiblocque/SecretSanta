@@ -7,13 +7,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Loading} from "../Component/Loading";
 import {useState} from "react";
 import {ErrorMessage} from "../Component/ErrorMessage";
+import {sendAllEmailsWithSetInterval} from "../utils/SendMails"
+
 export function CreationScreen({navigation}) {
 
     //TODO DETECTER QUAND ON REMPLIE UN PRENOM ET NON UNE ADRESSE MAIL ET VICE VERSA
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
 
     const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
-
     const [isLoading, setIsLoading] = useState(false);
 
     const addPlayer = () => {
@@ -50,6 +51,7 @@ export function CreationScreen({navigation}) {
             evenement['organisateur'] = filterData.organisateur;
             evenement['couples'] = generateCouples(filterData.player);
             saveEvenement(evenement).then();
+            sendAllEmailsWithSetInterval(evenement,setIsLoading, navigation, 'ConfirmCreation');
         } else {
             Alert.alert(
                 haveError.title,
@@ -92,7 +94,7 @@ export function CreationScreen({navigation}) {
         const secretSantasArray = secretSantas ? JSON.parse(secretSantas) : [];
         secretSantasArray.push(evenement);
         await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray));
-        await navigation.navigate('ConfirmCreation');
+        //await navigation.navigate('ConfirmCreation');
     }
 
     const [isEnabled, setIsEnabled] = useState(true);

@@ -14,10 +14,6 @@ export function CreationScreen({navigation}) {
 
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
 
-    const [game, setGame] = useState([{}]);
-
-    const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
-
     const [isLoading, setIsLoading] = useState(false);
 
     const { control, value, formState: { errors,  }, handleSubmit} = useForm({
@@ -48,7 +44,7 @@ export function CreationScreen({navigation}) {
     }
 
     const onSubmit = (data) => {
-        // setIsLoading(true);
+        setIsLoading(true);
         const filterData = filterPlayers(data.players);
 
         if (filterData.error)

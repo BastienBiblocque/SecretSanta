@@ -9,7 +9,6 @@ import {useState} from "react";
 import {ErrorMessage} from "../Component/ErrorMessage";
 export function CreationScreen({navigation}) {
 
-    //TODO DETECTER QUAND ON REMPLIE UN PRENOM ET NON UNE ADRESSE MAIL ET VICE VERSA
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
 
     const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
@@ -38,27 +37,37 @@ export function CreationScreen({navigation}) {
     }
 
     const onSubmit = (data) => {
-        setIsLoading(true);
         const evenement = {
             name: data.name,
             budget: data.budget,
             date: data.date,
         }
         const filterData = filter(data);
-        const haveError = checkParticipant(filterData);
-        if  (!haveError) {
-            evenement['organisateur'] = filterData.organisateur;
-            evenement['couples'] = generateCouples(filterData.player);
-            saveEvenement(evenement).then();
-        } else {
+        if (filterData.error) {
             Alert.alert(
-                haveError.title,
-                haveError.message,
+                'Champs manquant',
+                'Vous avez remplis un nom et non une adresse mail ou vice versa',
                 [
                     { text: "OK", onPress: () => console.log("OK Pressed") }
                 ]
             )
             setIsLoading(false);
+        } else{
+            const haveError = checkParticipant(filterData);
+            if  (!haveError) {
+                evenement['organisateur'] = filterData.organisateur;
+                evenement['couples'] = generateCouples(filterData.player);
+                saveEvenement(evenement).then();
+            } else {
+                Alert.alert(
+                    haveError.title,
+                    haveError.message,
+                    [
+                        { text: "OK", onPress: () => console.log("OK Pressed") }
+                    ]
+                )
+                setIsLoading(false);
+            }
         }
     };
 
@@ -66,14 +75,16 @@ export function CreationScreen({navigation}) {
         const tmp = [];
         const numberSubscribe = Object.keys(data).length / 2;
         for (let i = 0; i < numberSubscribe; i++) {
-            console.log(data['name-' + i])
-            console.log(data['email-' + i])
             if (data['name-' + i] && data['email-' + i])
                 tmp.push({name: data['name-' + i], email: data['email-' + i]});
+            else if (data['name-' + i] || data['email-' + i]){
+                return {error:true};
+            }
+
         }
         if (isEnabled)
             tmp.push({name: data['name-Organisateur'], email: data['email-Organisateur']});
-        return {player:tmp, organisateur: data['name-Organisateur']};
+        return {player:tmp, organisateur: data['name-Organisateur'], error:false};
     }
 
     const generateCouples = (data) => {

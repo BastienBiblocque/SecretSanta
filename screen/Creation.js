@@ -1,11 +1,10 @@
-import {Image, ScrollView, Switch, Text, TextInput, View} from "react-native";
+import {Image, ScrollView, Switch, Text, View} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {ButtonComponent} from "../component/Button";
-import {Controller, useFieldArray, useForm} from "react-hook-form";
+import {useFieldArray, useForm} from "react-hook-form";
 import {Loading} from "../component/Loading";
 import {useState} from "react";
-import {ErrorMessage} from "../component/ErrorMessage";
 import {filterPlayers} from "../utils/filterPlayers";
 import {checkParticipant} from "../utils/checkParticipant";
 import {generateCouples} from "../utils/generateCouple";
@@ -14,10 +13,9 @@ import {sendAllEmailsWithSetInterval} from "../utils/SendMails";
 import {form} from "../style/form";
 import {image} from "../style/image";
 import {AlertCreate} from "../component/Alerte";
+import {FormController} from "../component/FormController";
 
 export function CreationScreen({navigation}) {
-
-    //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
 
     const [isLoading, setIsLoading] = useState(false);
 
@@ -29,8 +27,8 @@ export function CreationScreen({navigation}) {
 
     const {fields, append,} = useFieldArray({control, name: "players"});
 
-    const [isEnabled, setIsEnabled] = useState(true);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+    const [isOrganisateurPlayer, setIsOrganisateurPlayer] = useState(true);
+    const toggleSwitch = () => setIsOrganisateurPlayer(previousState => !previousState);
 
     const onSubmit = (data) => {
         setIsLoading(true);
@@ -41,7 +39,7 @@ export function CreationScreen({navigation}) {
             AlertCreate('Champs manquant', 'Vous avez remplis un nom et non une adresse mail ou vice versa');
             setIsLoading(false);
         } else {
-            if (isEnabled)
+            if (isOrganisateurPlayer)
                 filterData.push({email: data.organisateurEmail, name: data.organisateurName});
             const evenement = {
                 name: data.name,
@@ -82,135 +80,48 @@ export function CreationScreen({navigation}) {
             <Image style={[image.image, {width: 283, height: 200}]} source={require('../image/tree.png')}/>
             <View style={{marginRight: 30, marginLeft: 30}}>
                 <View>
-                    <Text style={form.label}>Nom de l'evenement</Text>
-                    <Controller
-                        name={`name`}
-                        control={control}
-                        value={value}
-                        rules={{required: true}}
-                        render={({field: {onChange, onBlur, value}}) => (
-                            <TextInput
-                                style={form.input}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                            />
-                        )}
-                    />
-                    {errors.name && <ErrorMessage message="Le nome de l'evenement est requis."/>}
+                    <FormController label="Nom de l'evenement" required={true} name="name" control={control}
+                                    value={value} errorMessage="Le nom de l'evenement est requis." errors={errors.name} />
 
-                    <Text style={form.label}>Budget</Text>
-                    <Controller
-                        name={`budget`}
-                        control={control}
-                        value={value}
-                        rules={{required: true}}
-                        render={({field: {onChange, onBlur, value}}) => (
-                            <TextInput
-                                style={form.input}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                            />
-                        )}
-                    />
-                    {errors.budget && <ErrorMessage message="Le budget est requis."/>}
+                    <FormController label="Budget" required={true} name="budget" control={control}
+                                    value={value} errorMessage="Le budget est requis." errors={errors.budget} />
 
                 </View>
                 <View>
-                    <Text style={form.label}>Nom de l'organisateur</Text>
-                    <Controller
-                        name={`organisateurName`}
-                        control={control}
-                        value={value}
-                        rules={{required: true}}
-                        render={({field: {onChange, onBlur, value}}) => (
-                            <TextInput
-                                style={form.input}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                            />
-                        )}
-                    />
-                    {errors.organisateurName && <ErrorMessage message="Le nom de l'organisateur est requis."/>}
-                    <Text style={form.label}>Email de l'organisateur</Text>
-                    <Controller
-                        name={`organisateurEmail`}
-                        control={control}
-                        value={value}
-                        rules={{required: true}}
-                        render={({field: {onChange, onBlur, value}}) => (
-                            <TextInput
-                                style={form.input}
-                                onBlur={onBlur}
-                                onChangeText={onChange}
-                                value={value}
-                            />
-                        )}
-                    />
-                    {errors.organisateurEmail && <ErrorMessage message="Le nom de l'organisateur est requis."/>}
+                    <FormController label="Nom de l'organisateur" required={true} name="organisateurName" control={control}
+                                    value={value} errorMessage="Le nom de l'organisateur est requis." errors={errors.organisateurName} />
+
+                    <FormController label="Email de l'organisateur" required={true} name="organisateurEmail" control={control}
+                                    value={value} errorMessage="Le mail de l'organisateur est requis." errors={errors.organisateurEmail} />
+
                     <View>
                         <Text style={{marginTop: 10, marginBottom: 10, color: '#386641'}}>L'organisateur participe au
                             secret santa</Text>
                         <Switch
                             trackColor={{true: "#BC4749", false: "#767577"}}
-                            thumbColor={isEnabled ? "#fee374" : "#f4f3f4"}
+                            thumbColor={isOrganisateurPlayer ? "#fee374" : "#f4f3f4"}
                             ios_backgroundColor="#3e3e3e"
                             onValueChange={toggleSwitch}
-                            value={isEnabled}
+                            value={isOrganisateurPlayer}
                         />
                     </View>
                 </View>
                 {fields.map((item, index) => {
                     return (
                         <View key={index}>
-                            <Text style={form.label}>#{index + 1} nom</Text>
-                            <Controller
-                                name={`players.${index}.name`}
-                                control={control}
-                                value={value}
-                                render={({field: {onChange, onBlur, value}}) => (
-                                    <TextInput
-                                        style={form.input}
-                                        onBlur={onBlur}
-                                        onChangeText={onChange}
-                                        value={value}
-                                    />
-                                )}
-                            />
-                            {errors[`players.${index}.name`] &&
-                                <ErrorMessage message="Le nom de l'organisateur est requis."/>}
+                            <FormController label={`#${index + 1} nom`} required={false} name={`players.${index}.name`}
+                                            control={control} value={value} errorMessage="" errors={null} />
 
-                            <Text style={form.label}>#{index + 1} email</Text>
-                            <Controller
-                                name={`players.${index}.email`}
-                                control={control}
-                                value={value}
-                                render={({field: {onChange, onBlur, value}}) => (
-                                    <TextInput
-                                        style={form.input}
-                                        onBlur={onBlur}
-                                        onChangeText={onChange}
-                                        value={value}
-                                    />
-                                )}
-                            />
-                            {errors[`players.${index}.email`] &&
-                                <ErrorMessage message="Le nom de l'organisateur est requis."/>}
+                            <FormController label={`#${index + 1} email`} required={false} name={`players.${index}.email`}
+                                            control={control} value={value} errorMessage="" errors={null} />
 
                         </View>
                     );
                 })}
-                <ButtonComponent isPrimary={'false'} onPress={() => {
-                    append({firstName: '', lastName: ''});
-                }} text="Ajouter un participant" style={form.margin}/>
+                <ButtonComponent isPrimary={'false'} onPress={() => {append({firstName: '', lastName: ''});}}
+                                 text="Ajouter un participant" style={form.margin}/>
                 <ButtonComponent isPrimary={'true'} onPress={handleSubmit(onSubmit)} text="Créer" style={form.margin}/>
             </View>
-            <ButtonComponent isPrimary={'true'} onPress={() => {
-                AlertCreate('test', 'test')
-            }} text="alert" style={form.margin}/>
-
         </ScrollView>
     );
 }

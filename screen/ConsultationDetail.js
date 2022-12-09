@@ -1,4 +1,4 @@
-import {Image, ScrollView, StyleSheet, Text} from "react-native";
+import {Image, ScrollView, Text} from "react-native";
 import * as React from "react";
 import {background} from "../style/background";
 import {ButtonComponent} from "../component/Button";
@@ -7,6 +7,7 @@ import {useState} from "react";
 import {Loading} from "../component/Loading";
 import {sendAllEmailsWithSetInterval} from "../utils/SendMails"
 import {image} from "../style/image";
+import {margin} from "../style/margin";
 
 export function ConsultationDetailScreen({route, navigation}) {
 
@@ -33,16 +34,8 @@ export function ConsultationDetailScreen({route, navigation}) {
             {secretSantaDetail.couples.map((couple, key) => (
                 <Text key={key} style={text.text}>{couple.giver.name} - {couple.giver.email}</Text>
             ))}
-            <ButtonComponent text="Renvoyer les mails" isPrimary={'true'} onPress={() => resendEmail()} style={styles.margin}/>
-            <ButtonComponent text="Se spoiler" isPrimary={'false'} onPress={() => navigation.navigate('SpoilerDetail',{secretSanta:secretSanta})} style={styles.margin}/>
+            <ButtonComponent text="Renvoyer les mails" isPrimary={'true'} onPress={() => resendEmail()} style={margin.margin}/>
+            <ButtonComponent text="Se spoiler" isPrimary={'false'} onPress={() => navigation.navigate('SpoilerDetail',{secretSanta:secretSanta})} style={margin.margin}/>
         </ScrollView>
     );
 }
-
-const styles = StyleSheet.create({
-    margin: {
-        marginTop: 16,
-        marginLeft: 30,
-        marginRight: 30,
-    },
-});

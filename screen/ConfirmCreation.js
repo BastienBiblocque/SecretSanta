@@ -1,9 +1,10 @@
-import { Image, ScrollView, StyleSheet, Text } from "react-native";
+import { Image, ScrollView, Text } from "react-native";
 import * as React from "react";
 import { background } from "../style/background";
 import { text } from "../style/text";
 import { ButtonComponent } from "../component/Button";
 import {image} from "../style/image";
+import {margin} from "../style/margin";
 
 export function ConfirmCreationScreen({ navigation }) {
   return (
@@ -20,16 +21,8 @@ export function ConfirmCreationScreen({ navigation }) {
         }}
         text="Continuer"
         isPrimary={"true"}
-        style={styles.margin}
+        style={margin.margin}
       />
     </ScrollView>
   );
 }
-
-const styles = StyleSheet.create({
-  margin: {
-    marginTop: 16,
-    marginLeft: 30,
-    marginRight: 30,
-  },
-});

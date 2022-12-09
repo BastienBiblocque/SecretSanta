@@ -5,11 +5,17 @@ import {ButtonComponent} from "../Component/Button";
 import {Controller, useForm} from "react-hook-form";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import {Loading} from "../Component/Loading";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {ErrorMessage} from "../Component/ErrorMessage";
+import {generateCouples} from "../metier/generateCouple";
+import {saveEvenement} from "../metier/saveEvenement";
+import {checkParticipant} from "../metier/checkParticipant";
+import {filterForm} from "../metier/filterForm";
 export function CreationScreen({navigation}) {
 
     //TODO PERSISTANCE DES DONNES QUAND ON QUITTE L'APPLICATION
+
+    const [game, setGame] = useState([{}]);
 
     const [numberOfPlayer, setNumberOfParticipants] = React.useState(['Organisateur', '1', '2', '3']);
 
@@ -18,31 +24,24 @@ export function CreationScreen({navigation}) {
     const addPlayer = () => {
         setNumberOfParticipants([...numberOfPlayer, numberOfPlayer.length.toString()]);
     }
-    const { control, handleSubmit, formState: { errors } } = useForm({});
+    const { control, handleSubmit, formState: { errors,  }, watch } = useForm({});
 
-    const checkParticipant =  (evenement) => {
-        const allPlayerName = evenement.player.map((player) => player.name);
-        if (allPlayerName.length !== new Set(allPlayerName).size) {
-            return {title: 'Nom similaire', message: "Les noms des participants doivent être différents"};
-        }
-        const allPlayerEmail = evenement.player.map((player) => player.email);
-        if (allPlayerEmail.length !== new Set(allPlayerEmail).size) {
-            return {title: 'Mail similaire', message: "Les mails des participants doivent être différents"};
-        }
-        console.log(allPlayerName.length)
-        if (allPlayerName.length < 3) {
-            return {title: 'Nombre insufisant', message: "Vous devez inscrire au moins 3 personnes pour créer un évenement"};
-        }
-        return false;
-    }
+    const [isEnabled, setIsEnabled] = useState(true);
+    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
+
+    useEffect(()=>{
+        console.log(watch());
+    },[watch])
+
 
     const onSubmit = (data) => {
+        setIsLoading(true);
         const evenement = {
             name: data.name,
             budget: data.budget,
             date: data.date,
         }
-        const filterData = filter(data);
+        const filterData = filterForm(data, isEnabled);
         if (filterData.error) {
             Alert.alert(
                 'Champs manquant',
@@ -70,44 +69,6 @@ export function CreationScreen({navigation}) {
             }
         }
     };
-
-    const filter = (data) => {
-        const tmp = [];
-        const numberSubscribe = Object.keys(data).length / 2;
-        for (let i = 0; i < numberSubscribe; i++) {
-            if (data['name-' + i] && data['email-' + i])
-                tmp.push({name: data['name-' + i], email: data['email-' + i]});
-            else if (data['name-' + i] || data['email-' + i]){
-                return {error:true};
-            }
-
-        }
-        if (isEnabled)
-            tmp.push({name: data['name-Organisateur'], email: data['email-Organisateur']});
-        return {player:tmp, organisateur: data['name-Organisateur'], error:false};
-    }
-
-    const generateCouples = (data) => {
-        const couples = [];
-        const shuffledPlayer = data.sort((a, b) => 0.5 - Math.random());
-        shuffledPlayer.forEach((player, index)=>{
-            if (shuffledPlayer[index+ 1])
-                couples.push({giver: shuffledPlayer[index], receiver: shuffledPlayer[index+ 1]});
-            else
-                couples.push({giver: shuffledPlayer[index], receiver: shuffledPlayer[0]});
-        })
-        return couples;
-    }
-    async function saveEvenement(evenement) {
-        const secretSantas = await AsyncStorage.getItem('secretSantas');
-        const secretSantasArray = secretSantas ? JSON.parse(secretSantas) : [];
-        secretSantasArray.push(evenement);
-        await AsyncStorage.setItem('secretSantas', JSON.stringify(secretSantasArray));
-        await navigation.navigate('ConfirmCreation');
-    }
-
-    const [isEnabled, setIsEnabled] = useState(true);
-    const toggleSwitch = () => setIsEnabled(previousState => !previousState);
 
     if  (isLoading) {
         return (

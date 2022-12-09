@@ -1,12 +1,12 @@
 import { Image, ScrollView, Text, StyleSheet } from "react-native";
 import * as React from "react";
-import { ButtonComponent } from "../Component/Button";
+import { ButtonComponent } from "../component/Button";
 import { useNavigation } from "@react-navigation/native";
 import { background } from "../style/background";
 import { text } from "../style/text";
 import { margin } from "../style/margin";
 
-export function HomeScreen({navigation}) {
+export function HomeScreen({ navigation }) {
   const navigateTo = (screen) => {
     navigation.navigate(screen);
   };
